@@ -19,7 +19,8 @@ program
   .option('-p, --port <port>', 'Port', 3000)
   .option('-d, --debug', 'Debug', false)
   .option('-s, --kv-set [variable.key=value]', 'Binds variable to a local implementation of Workers KV and sets key to value', collect, [])
-  .option('-f, --kv-file [variable=path]', 'Set the filepath for value peristence for the local implementation of Workers KV', collect, [])
+  .option('-f, --kv-file [variable=path]', 'Set the filepath for value persistence for the local implementation of Workers KV', collect, [])
+  .option('-k, --kv-redis [variable=URI]', 'Set the redis URI for value persistence for local implementation of Workers KV', collect, [])
   .option('-w, --wasm [variable=path]', 'Binds variable to wasm located at path', collect, [])
   .option('-c, --enable-cache', 'Enables cache <BETA>', false)
   .option('-r, --watch', 'Watch the worker script and restart the worker when changes are detected', false)
@@ -44,7 +45,7 @@ function run (file, wasmBindings) {
   console.log('Starting up...')
   const fullpath = path.resolve(process.cwd(), file)
   const script = utils.read(fullpath)
-  const bindings = utils.extractKVBindings(program.kvSet.concat(program.set), program.kvFile)
+  const bindings = utils.extractKVBindings(program.kvSet.concat(program.set), program.kvFile, program.kvRedis)
   Object.assign(bindings, wasmBindings)
 
   // Add a warning log for deprecation

@@ -2,15 +2,24 @@
 
 ***
 
+## This is a fork of [@dollarshaveclub/cloudworker](https://github.com/dollarshaveclub/cloudworker).
+
+Changelog:
+```
+- added Redis as KV backend
+- broke file-based persistent storage
+```
+
 # ⚠️ Cloudworker is no longer actively maintained at Dollar Shave Club. If you're interested in volunteering to help, please open an issue ⚠️
 
-Cloudworker allows you to run Cloudflare Worker scripts locally. 
+
+Cloudworker allows you to run Cloudflare Worker scripts locally.
 
 ## Installing
 
 Install via NPM:
 ```sh
-npm install -g @dollarshaveclub/cloudworker
+npm install -g git://github.com:anapsix/cloudworker.git#redis-kv
 ```
 ## Package Usage
 
@@ -40,7 +49,8 @@ Options:
   -p, --port <port>                   Port (default: 3000)
   -d, --debug                         Debug
   -s, --kv-set [variable.key=value]   Binds variable to a local implementation of Workers KV and sets key to value (default: [])
-  -f, --kv-file [variable=path]       Set the filepath for value peristence for the local implementation of Workers KV (default: [])
+  -f, --kv-file [variable=path]       Set the filepath for value persistence for the local implementation of Workers KV (default: [])
+  -k, --kv-redis [variable=URI]       Set the redis URI for value persistence for local implementation of Workers KV (default: [])
   -w, --wasm [variable=path]          Binds variable to wasm located at path (default: [])
   -c, --enable-cache                  Enables cache <BETA>
   -r, --watch                         Watch the worker script and restart the worker when changes are detected
@@ -70,8 +80,13 @@ cloudworker --debug --kv-file KeyValueStore=kv.json --kv-set KeyValueStore.key=v
 curl localhost:3000/
 ```
 
+```sh
+cloudworker --debug --kv-redis KeyValueStore=redis://127.0.0.1:6379/?db=1 example/example-kv.js
+curl localhost:3000/
+```
+
 ### WebAssembly
-#### Simple 
+#### Simple
 
 ```sh
 cloudworker --debug --wasm Wasm=example/simple.wasm example/example-wasm-simple.js
@@ -88,7 +103,7 @@ curl localhost:3000/?num=9
 [WebAssembly Source](https://developers.cloudflare.com/workers/api/resource-bindings/webassembly-modules/)
 
 
-#### Resizer 
+#### Resizer
 
 ```sh
 cloudworker --debug --wasm RESIZER_WASM=example/resizer.wasm example/example-wasm-resizer.js
@@ -96,9 +111,9 @@ curl localhost:3000/wasm-demo/dogdrone.png?width=210 # or open in browser
 ```
 [WebAssembly Source](https://github.com/cloudflare/cloudflare-workers-wasm-demo)
 
-## Cloudflare Worker Compatibility 
+## Cloudflare Worker Compatibility
 
-Cloudworker strives to be as similar to the Cloudflare Worker runtime as possible. A script should behave the same when executed by Cloudworker and when run within Cloudflare Workers. Please file an issue for scenarios in which Cloudworker behaves differently. As behavior differences are found, this package will be updated to match the Cloudflare Worker runtime. This may result in breakage if scripts depended on those behavior differences. 
+Cloudworker strives to be as similar to the Cloudflare Worker runtime as possible. A script should behave the same when executed by Cloudworker and when run within Cloudflare Workers. Please file an issue for scenarios in which Cloudworker behaves differently. As behavior differences are found, this package will be updated to match the Cloudflare Worker runtime. This may result in breakage if scripts depended on those behavior differences.
 
 ## Release Process
 
